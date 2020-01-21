@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="S:/Server/Code Jar/Build/Spigot/Spigot-API/target/spigot-api-1.15.1-R0.1-SNAPSHOT-shaded.jar"/>
-	<classpathentry kind="lib" path="S:/Server/Code Jar/Vault.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Stephen/Desktop/Java projects/spigot-api-1.15.1-R0.1-SNAPSHOT-shaded.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Stephen/Desktop/Java projects/Vault.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
