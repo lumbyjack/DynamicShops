@@ -1,6 +1,9 @@
 package com.hotmail.idiotonastic.plugins.DynamicShops;
 
+import java.math.BigDecimal;
 import java.util.UUID;
+
+import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,7 +18,7 @@ public class Commands implements Listener, CommandExecutor {
 	
 	private static Main plugin = Main.getPlugin(Main.class);
 	private boolean GUI = plugin.getGUI();
-	
+	private static Economy econ = plugin.getEconomy();
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (cmd.getName().equalsIgnoreCase("Sell")) {
 			if (sender instanceof Player) {
@@ -118,8 +121,8 @@ public class Commands implements Listener, CommandExecutor {
 						doReload = true;
 					} else if (args[0].toLowerCase().equals("set")){
 						Shop.set(p,p.getInventory().getItemInMainHand(),args[1]);
-						double price = Shop.getprice(p.getInventory().getItemInMainHand().getType());
-						p.sendMessage(String.format("Price for: %s set to %s",p.getInventory().getItemInMainHand().getType(), Double.toString(price)));
+						BigDecimal price = Shop.getprice(p.getInventory().getItemInMainHand().getType());
+						p.sendMessage(String.format("Price for: %s set to %s",p.getInventory().getItemInMainHand().getType(), econ.format(price.doubleValue())));
 						return true;
 					} else {
 						p.sendMessage("Please use " + ChatColor.BLUE + "/DSA [ reload | set ]");

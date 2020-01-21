@@ -1,5 +1,7 @@
 package com.hotmail.idiotonastic.plugins.DynamicShops;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,10 +13,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import net.md_5.bungee.api.ChatColor;
+import net.milkbowl.vault.economy.Economy;
 
 public class ShopScreen implements Listener {
 
 	private static Main plugin = Main.getPlugin(Main.class);
+	private static Economy econ = plugin.getEconomy();
 	private static String menuTitle = ChatColor.GOLD + "Shop Menu";
 	private static String ammountTitle = ChatColor.GOLD + "Ammount";
 	private static String itemTitle = ChatColor.GOLD + "Item Slection";
@@ -23,6 +27,7 @@ public class ShopScreen implements Listener {
 	private static String backTitle = ChatColor.YELLOW + "Back to Menu";
 	private static String sellTitle = ChatColor.YELLOW + "Sell";
 	private static String sellConfirm = ChatColor.GREEN + "Sell";
+	private static RoundingMode round = RoundingMode.UP;
 	/*
 	 * Building blocks
 	 * Decoration blocks
@@ -115,11 +120,18 @@ public class ShopScreen implements Listener {
 				{
 					if(plugin.getConfig().getInt(items[y].toUpperCase()) != -1)//is not -1 price
 					{   
-						double price = plugin.getConfig().getInt(items[y].toUpperCase());
+						//BigDecimal price = Shop.getprice(Material.getMaterial(items[y].toUpperCase()));
+						BigDecimal price = new BigDecimal(plugin.getConfig().getDouble(items[y].toUpperCase()));
+						if (price.intValue()>0){
+							price.setScale(4, round);
+						} else {
+							price.setScale(4);
+						}
+						
 						ItemStack item = new ItemStack(Material.getMaterial(items[y].toUpperCase()), 1);
 						ItemMeta iM = item.getItemMeta();
 						try {
-						iM.setLore(Arrays.asList("Price: £ " + price));
+						iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue())));
 						item.setItemMeta(iM);
 						} catch (NullPointerException e){
 							e.printStackTrace();
@@ -168,29 +180,34 @@ public class ShopScreen implements Listener {
 		ItemMeta bM = back.getItemMeta();
 		bM.setDisplayName(backTitle);
 		back.setItemMeta(bM);
-		double price = plugin.getConfig().getInt(mat.name());
-
-		iM.setLore(Arrays.asList("Price: £ " + price));
+		BigDecimal price = Shop.getprice(mat);
+		if (price.intValue()>0){
+			price.setScale(4, round);
+		} else {
+			price.setScale(4);
+		}
+		
+		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue())));
 		item.setItemMeta(iM);
 		i.setItem(1, item);
 		item.setAmount(4);
-		iM.setLore(Arrays.asList("Price: £ " + price*4));
+		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue()*4)));
 		item.setItemMeta(iM);
 		i.setItem(2, item);
 		item.setAmount(8);
-		iM.setLore(Arrays.asList("Price: £ " + price*8));
+		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue()*8)));
 		item.setItemMeta(iM);
 		i.setItem(3, item);
 		item.setAmount(16);
-		iM.setLore(Arrays.asList("Price: £ " + price*16));
+		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue()*16)));
 		item.setItemMeta(iM);
 		i.setItem(4, item);
 		item.setAmount(32);
-		iM.setLore(Arrays.asList("Price: £ " + price*32));
+		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue()*32)));
 		item.setItemMeta(iM);
 		i.setItem(5, item);
 		item.setAmount(64);
-		iM.setLore(Arrays.asList("Price: £ " + price*64));
+		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue()*64)));
 		item.setItemMeta(iM);
 		i.setItem(6, item);
 

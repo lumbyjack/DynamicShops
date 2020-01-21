@@ -27,8 +27,7 @@ public class EventsClass implements Listener {
 		if (event.getView().getTitle().equals(sellTitle)) {
 			Player player = (Player) event.getPlayer();
 			ItemStack[] openS = event.getInventory().getContents();
-			Shop s = new Shop();
-			s.sell(player, openS, true);
+			Shop.sell(player, openS, true);
 			return;
 		}
 	}
