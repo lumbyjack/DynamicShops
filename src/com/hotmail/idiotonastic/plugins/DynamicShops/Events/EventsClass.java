@@ -55,17 +55,6 @@ public class EventsClass implements Listener {
 				return;
 			}
 		} 
-		
-		/*if (event.getView().getTitle().equals(sellTitle) && item.getItemMeta().getDisplayName().equalsIgnoreCase(sellConfirm)) {
-
-			ItemStack[] openS = event.getClickedInventory().getContents();
-			Shop s = new Shop();
-			event.setCancelled(true);
-			s.sell(player, openS, true);
-			event.getClickedInventory().clear();
-			player.closeInventory();
-			return;
-		} else*/
 		if (event.getView().getTitle().equals(menu)) {
 			
 			event.setCancelled(true);

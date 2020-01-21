@@ -126,6 +126,8 @@ public class ShopScreen implements Listener {
 							System.out.println("incorrect name: " + items[y] + " " + price);
 						}
 						i.setItem(x, item);
+					} else {
+						x -= 1;
 					}
 				}
 				
@@ -1063,7 +1065,7 @@ public class ShopScreen implements Listener {
 	    "Melon_Slice",
 	    "Dried_Kelp",
 	    "Cooked_Beef",
-	    "Steak",
+	    "Raw_Beef",
 	    "Chicken",
 	    "Cooked_Chicken",
 	    "Rotten_Flesh",
