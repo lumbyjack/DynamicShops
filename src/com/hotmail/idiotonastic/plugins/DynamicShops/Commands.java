@@ -7,7 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -56,8 +55,7 @@ public class Commands implements Listener, CommandExecutor {
 							return true;
 						}
 						try {
-							@SuppressWarnings("unused")
-							ItemStack m = new ItemStack(Material.getMaterial(args[1]),1);
+							Material.getMaterial(args[1].toUpperCase());
 						} catch(NullPointerException e) {
 							p.sendMessage("Item not found.");
 							return false;
@@ -70,8 +68,7 @@ public class Commands implements Listener, CommandExecutor {
 							return true;
 						}
 						try {
-							@SuppressWarnings("unused")
-							ItemStack m = new ItemStack(Material.getMaterial(args[1]),1);
+							Material.getMaterial(args[1].toUpperCase());
 						} catch(NullPointerException e) {
 							p.sendMessage("Item not found.");
 							return false;
@@ -83,8 +80,7 @@ public class Commands implements Listener, CommandExecutor {
 							return true;
 						} else {
 							try {
-								@SuppressWarnings("unused")
-								ItemStack m = new ItemStack(Material.getMaterial(args[1]),1);
+								Material.getMaterial(args[1].toUpperCase());
 							} catch(NullPointerException e) {
 								p.sendMessage("Item not found.");
 								return false;
@@ -139,8 +135,7 @@ public class Commands implements Listener, CommandExecutor {
 					doReload = true;
 				} else if (args[0].toLowerCase() == "set"){
 					try {
-						@SuppressWarnings("unused")
-						ItemStack m = new ItemStack(Material.getMaterial(args[1]),1);
+						Material.getMaterial(args[1].toUpperCase());
 					} catch(NullPointerException e) {
 						sender.sendMessage("Item not found.");
 						return false;
