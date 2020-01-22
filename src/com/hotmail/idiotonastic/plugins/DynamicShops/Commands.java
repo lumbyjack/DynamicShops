@@ -87,7 +87,7 @@ public class Commands implements Listener, CommandExecutor {
 								p.sendMessage("Item not found.");
 								return false;
 							}
-							Shop.price(p,args);
+							Shop.priceC(p,args);
 							return true;
 						}
 						

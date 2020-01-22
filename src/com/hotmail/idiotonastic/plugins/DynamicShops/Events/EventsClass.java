@@ -1,5 +1,6 @@
 package com.hotmail.idiotonastic.plugins.DynamicShops.Events;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -89,7 +90,13 @@ public class EventsClass implements Listener {
 		} else
 		if (event.getView().getTitle().equals(ammount)) {
 			event.setCancelled(true);
+			ShopScreen as = new ShopScreen();
+			if(player.getInventory().firstEmpty()== -1){
+				player.sendMessage(ChatColor.LIGHT_PURPLE+ "Inventory Full.");
+				return;
+			} 
 			Shop.buy(player, item);
+			as.amountScreen(player, item.getType(),event.getClickedInventory().getItem(8).getItemMeta().getLore());
 			return;
 		}
 		return;

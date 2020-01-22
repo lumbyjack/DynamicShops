@@ -116,14 +116,14 @@ public class ShopScreen implements Listener {
 				
 				if(plugin.getConfig().contains(items[y].toUpperCase()))//is in config
 				{
-					if(plugin.getConfig().getInt(items[y].toUpperCase()) != -1)//is not -1 price
+					if(plugin.getConfig().getString(items[y].toUpperCase()) != "-1")//is not -1 price
 					{   
 						//double price = Shop.getprice(Material.getMaterial(items[y].toUpperCase()));
 						double price = plugin.getConfig().getDouble(items[y].toUpperCase());						
 						ItemStack item = new ItemStack(Material.getMaterial(items[y].toUpperCase()), 1);
 						ItemMeta iM = item.getItemMeta();
 						try {
-						iM.setLore(Arrays.asList("Price: " + econ.format(price)));
+						//iM.setLore(Arrays.asList("Price: " + econ.format(price)));
 						item.setItemMeta(iM);
 						} catch (NullPointerException e){
 							e.printStackTrace();
@@ -186,35 +186,27 @@ public class ShopScreen implements Listener {
 		
 		iM.setLore(Arrays.asList("Price: " + econ.format(price)));
 		item.setItemMeta(iM);
-		i.setItem(0, item);
+		i.setItem(1, item);
 		item.setAmount(4);
 		iM.setLore(Arrays.asList("Price: " + econ.format(price*4)));
 		item.setItemMeta(iM);
-		i.setItem(1, item);
+		i.setItem(2, item);
 		item.setAmount(8);
 		iM.setLore(Arrays.asList("Price: " + econ.format(price*8)));
 		item.setItemMeta(iM);
-		i.setItem(2, item);
+		i.setItem(3, item);
 		item.setAmount(16);
 		iM.setLore(Arrays.asList("Price: " + econ.format(price*16)));
 		item.setItemMeta(iM);
-		i.setItem(3, item);
+		i.setItem(4, item);
 		item.setAmount(32);
 		iM.setLore(Arrays.asList("Price: " + econ.format(price*32)));
 		item.setItemMeta(iM);
-		i.setItem(4, item);
+		i.setItem(5, item);
 		item.setAmount(64);
 		iM.setLore(Arrays.asList("Price: " + econ.format(price*64)));
 		item.setItemMeta(iM);
-		i.setItem(5, item);
-		item.setAmount(28);
-		iM.setLore(Arrays.asList("Price: " + econ.format(price*128)));
-		item.setItemMeta(iM);
 		i.setItem(6, item);
-		item.setAmount(56);
-		iM.setLore(Arrays.asList("Price: " + econ.format(price*254)));
-		item.setItemMeta(iM);
-		i.setItem(7, item);
 		i.setItem(8, back);
 		player.openInventory(i);
 
@@ -1086,7 +1078,7 @@ public class ShopScreen implements Listener {
 	    "Melon_Slice",
 	    "Dried_Kelp",
 	    "Cooked_Beef",
-	    "Raw_Beef",
+	    "Beef",
 	    "Chicken",
 	    "Cooked_Chicken",
 	    "Rotten_Flesh",

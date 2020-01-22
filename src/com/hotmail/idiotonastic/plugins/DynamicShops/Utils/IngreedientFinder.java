@@ -35,7 +35,7 @@ public class IngreedientFinder {
 		        ShapelessRecipe shapeless = (ShapelessRecipe)recipe;
 		        for (int i = 0; i <shapeless.getIngredientList().size(); i++){
 		        	if(shapeless.getIngredientList().get(i) != null){
-		        		if(item.getType().name().contains("_BLOCK")){
+		        		if(item.getType().name().contains("_BLOCK") && !item.getType().name().contains("GRASS")){
 		        			inv.addItem(shapeless.getIngredientList().get(i));
 		        		}
 		        		
@@ -59,6 +59,9 @@ public class IngreedientFinder {
 		for (int x =0; x < returns.length; x++){
 			String[] compactSplit = compact.get(x).split(":");
 			returns[x]= new ItemStack(Material.getMaterial(compactSplit[0]),Integer.valueOf(compactSplit[1]));
+		}
+		if (compact.contains(""+item.getType().name())){
+			returns = new ItemStack[0];
 		}
 		return returns;
 	}

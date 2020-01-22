@@ -6,8 +6,11 @@ import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,51 +27,59 @@ public class Shop implements Listener {
 	private static DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private static Date date = new Date();
 	private static Log logs = new Log();
-	private static Material[] oddities = 
-		{
-		Material.REDSTONE,
-		Material.LAPIS_LAZULI,
-		Material.IRON_NUGGET,
-		Material.GOLD_NUGGET,
-		Material.DIAMOND,
-		Material.EMERALD
-		};
 	
 	public static double getprice(Material item){
-		double price = round(Double.valueOf(plugin.getConfig().getString(item.name())),2);
-		for(int x = 0; x < oddities.length; x++){
-			if(item.equals(oddities[x])){
-				return round(price,2);
-			}
+		double price = Double.valueOf(plugin.getConfig().getString(item.name()));
+		if (price <=0.0){
+			price = 1.0;
+		}
+		if (!item.isBlock() || item.name().contains("_ORE")){
+			return price;
 		}
 		double tPrice = price;
-		if (plugin.getConfig().getInt(item.name()) != -1){
+		if (plugin.getConfig().getString(item.name()) != "-1"){
 			ItemStack is = new ItemStack (item,1);
-			if( Bukkit.getServer().getRecipesFor(is) != null && IngreedientFinder.getRecipeIngreedients(is)[0].getType() != item){
-				ItemStack[] i = IngreedientFinder.getRecipeIngreedients(is);
-					if (i.length > 1) {
-						tPrice = 0.0;
-						for(int x = 0; x < i.length; x++){
-								price = round(plugin.getConfig().getDouble(i[x].getType().name().toUpperCase()),2);
-								tPrice = tPrice + price;
-						}	
+			if (is != null){
+				try {				
+					if(Bukkit.getServer().getRecipesFor(is).size() == 0 || !Bukkit.getServer().getRecipesFor(is).isEmpty()){
+						if (IngreedientFinder.getRecipeIngreedients(is)[0].getType() != item){
+							ItemStack[] i = IngreedientFinder.getRecipeIngreedients(is);
+								if (i.length > 1) {
+									tPrice = 0.0;
+									for(int x = 0; x < i.length; x++){
+											price = round(Double.valueOf(plugin.getConfig().getString(i[x].getType().name().toUpperCase())),2);
+											tPrice = tPrice + price;
+									}	
+								}
+								return round(tPrice, 2);
+							}
+							
+					} else {
+						price = Double.valueOf(plugin.getConfig().getString(item.name()));
+						if (price <= 0.0 ){
+							price = 0.1;
+							return price;
+						}
+						return round(price,2);
 					}
-					return round(tPrice, 2);
-			} else {
-				price = plugin.getConfig().getDouble(item.name());
-				if (price <= 0 ){
-					price = 0.1;
-					return round(price,2);
+				}  catch(Exception e){
+					price = Double.valueOf(plugin.getConfig().getString(item.name()));
+					if (price <= 0.0 ){
+						price = 0.1;
+						return price;
+					}
+					return price;
 				}
-				return round(price,2);
+				
 			}
+			return Double.valueOf(plugin.getConfig().getString(item.name()));
 		}
 		if (IngreedientFinder.getOutputAmnt(new ItemStack(item)) > 0 && tPrice > 0){
 			tPrice = tPrice / IngreedientFinder.getOutputAmnt(new ItemStack(item));
-			if (tPrice <= 0){
+			if (tPrice <= 0.0){
 				tPrice = 0.1;
 			}
-			return round(tPrice, 2);
+			return round(tPrice,2);
 		}
 		return round(price,2);
 	}
@@ -79,16 +90,27 @@ public class Shop implements Listener {
 		ItemStack[] i = IngreedientFinder.getRecipeIngreedients(new ItemStack (item,1));
 		double priceM = 0.0;
 		double priceT = 0.0;
-		for(int x = 0; x < i.length; x++){
-			double price = plugin.getConfig().getDouble(i[x].getType().name());
+		if (i.length > 0){
+			for(int x = 0; x < i.length; x++){
+				double price = Double.valueOf(plugin.getConfig().getString(i[x].getType().name()));
+				priceM = modifyPrice(buy, price, amnt);
+				if (priceM <= 0.0){
+					priceM = 0.1;
+				}
+				priceM = round(priceM,2);
+				plugin.getConfig().set(i[x].getType().name().toUpperCase(), priceM);
+				priceT += priceM;
+			}
+		} else {
+			double price = Double.valueOf(plugin.getConfig().getString(item.name()));
 			priceM = modifyPrice(buy, price, amnt);
-			if (priceM <= 0){
+			if (priceM <= 0.0){
 				priceM = 0.1;
 			}
-			plugin.getConfig().set(i[x].getType().name().toUpperCase(), Double.valueOf(round(priceM,2)));
 			priceT += priceM;
 		}
-		plugin.getConfig().set(item.name().toUpperCase(),Double.valueOf(round(priceT,2)));
+		priceT = round(priceT,2);
+		plugin.getConfig().set(item.name().toUpperCase(),priceT);
 		plugin.saveConfig();
 		plugin.getConfig();
 		return;
@@ -117,7 +139,7 @@ public class Shop implements Listener {
 		log(p.getDisplayName(),item.getType().name(),0,price,false,true);
 	}
 	//Command get price
-	public static void price(Player p, String[] args) {
+	public static void priceC(Player p, String[] args) {
 		String itemName = args[1].toUpperCase();
 		Material item = Material.getMaterial(itemName);
 		price(p, item);
@@ -125,10 +147,10 @@ public class Shop implements Listener {
 	public static void price(Player p, Material item ) {
 		double op = getprice(item);
 		if (op == -1){
-			p.sendMessage("Item not avalible for trade, please contact your server admin for info");
+			p.sendMessage(ChatColor.GRAY + item.name().toString().toLowerCase().replace("_", " ") + ": is not avalible for trade.");
 			return;
 		}
-		p.sendMessage(String.format("price for 1 %s is: %s", item.name().toString().toLowerCase(), econ.format(op)));
+		p.sendMessage(String.format(ChatColor.AQUA + "price for 1 %s is: %s", item.name().toString().toLowerCase().replace("_", " "), econ.format(op).substring(0,1)+ op));
 	}
 	
 	public static void log(String name, String item, int ammount, double price, boolean BuySell, boolean Set){
@@ -149,23 +171,24 @@ public class Shop implements Listener {
 		int amnt = item.getAmount();
 		
 		if ( op == -1){
-			player.sendMessage("Item not avalible for trade, please contact your server admin for info");
+			player.sendMessage(ChatColor.GRAY + item.getType().name().toString().toLowerCase().replace("_", " ") + ": is not avalible for trade.");
 			return;
 		}
-		total = modifyPrice(true, op, amnt);
+		
 		if(!(econ.hasAccount(player))){
 			econ.createPlayerAccount(player);
 		}
+		total = op * amnt;
 		EconomyResponse r = econ.withdrawPlayer(player, total);
-		
+		total = modifyPrice(true, op, amnt);
 		setprice(item.getType(), amnt, true);
 		if(r.transactionSuccess()) {
-            player.sendMessage(String.format("You have spent %s and now have %s", econ.format(r.amount), econ.format(r.balance)));
-            player.getInventory().addItem(item);
+            player.sendMessage(String.format(ChatColor.GREEN +"You have spent %s and now have %s", econ.format(r.amount), econ.format(r.balance)));
+            player.getInventory().addItem(new ItemStack(item.getType(), item.getAmount()));
             log(player.getDisplayName(),item.getType().name().toString().toLowerCase(),amnt,total,true,false);
             return;
 		 } else {
-			 player.sendMessage("You do not have the required funds.");
+			 player.sendMessage(ChatColor.RED + "You do not have the required funds.");
 			 return;
 	     }
 		
@@ -181,32 +204,35 @@ public class Shop implements Listener {
 		sell(p, itemstack.getType(),itemstack.getAmount(), false);
 	}
 	public static void sell(Player p, Inventory inv, boolean GUI) {	
-		int y = 0;
 		Inventory minv = inv;
 		for(int i = 0; i < 54; i++){
-			int amount = getAmount(minv, inv.getContents()[y].getType());
-			if (amount != 0 && inv.getContents()[y].getType().isItem()){
-				Material m = inv.getContents()[y].getType();
-				minv.remove(m);
-				sell(p,m,amount, true);
+			if (minv != null){
+				
+				if (minv.getContents()[i] != null){
+					int amount = getAmount(minv, minv.getContents()[i].getType());
+					Material m = minv.getContents()[i].getType();
+					
+					sell(p,m,amount, true);
+					minv.remove(m);
+					
+				}
 			}
-			y++;
+
 		}
-		minv.clear();
 		return;
 	}
 	public static boolean sell(Player p, Material mat, int amount, boolean GUI) {
 		ItemStack itemstack = new ItemStack(mat,amount);
 		if(!GUI){
 			if (!p.getInventory().containsAtLeast(itemstack, 1)){
-				p.sendMessage("You do not have enough " + itemstack.getType().name().toString().toLowerCase() + ".");
+				p.sendMessage(ChatColor.GRAY + "You do not have enough " + mat.name().toString().toLowerCase().replace("_", " ") + ".");
 				return false;
 			} 
 		}
 		double total = 0.0;
 		double op = getprice(itemstack.getType());
 		if (op == -1){
-			p.sendMessage("Item not avalible for trade, please contact your server admin for info");
+			p.sendMessage(ChatColor.GRAY + mat.name().toString().toLowerCase().replace("_", " ") + ": is not avalible for trade.");
 			if (GUI) {
 				p.getInventory().addItem(itemstack);
 			}
@@ -217,14 +243,14 @@ public class Shop implements Listener {
 		setprice(itemstack.getType(), amount, false);
 		EconomyResponse r = econ.depositPlayer(p, total);
 	if(r.transactionSuccess()) {
-            p.sendMessage(String.format("You were given %s for %s x %s and now have %s", econ.format(r.amount),amount,itemstack.getType().name().toLowerCase(), econ.format(r.balance)));
+            p.sendMessage(String.format(ChatColor.AQUA + "You were given %s for %s x %s and now have %s", econ.format(r.amount),amount,mat.name().toString().toLowerCase().replace("_", " "), econ.format(r.balance)));
             if (!GUI){
             	p.getInventory().remove(itemstack);
             }
             log(p.getDisplayName(),itemstack.getType().name().toString().toLowerCase() ,itemstack.getAmount(),total,false,false);
             return true;
 	 } else {
-		 	p.sendMessage(String.format("An error occured: %s", r.errorMessage));
+		 	p.sendMessage(String.format(ChatColor.RED + "An error occured: %s", r.errorMessage));
 		 	return false;
      }
 
@@ -258,11 +284,11 @@ public class Shop implements Listener {
 		return round((total / 100), 2);
 		
 	}
-	public static double round(double value, int places) {
+	public static double round(double value, int places ) {
 	    if (places < 0) throw new IllegalArgumentException();
-
+	    places+=1;
 	    BigDecimal bd = BigDecimal.valueOf(value);
-	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    bd = bd.setScale(places, RoundingMode.UP);
 	    return bd.doubleValue();
 	}
 
