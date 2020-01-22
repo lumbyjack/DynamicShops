@@ -33,6 +33,7 @@ public class Main extends JavaPlugin implements Listener {
 		Commands commands = new Commands();
 		getCommand("Shop").setExecutor(commands);
 		getCommand("Sell").setExecutor(commands);
+		getCommand("Price").setExecutor(commands);
 		getCommand("DS").setExecutor(commands);
 		getCommand("DSA").setExecutor(commands);
 	}

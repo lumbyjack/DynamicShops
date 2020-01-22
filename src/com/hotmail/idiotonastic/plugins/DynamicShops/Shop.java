@@ -41,13 +41,14 @@ public class Shop implements Listener {
 			ItemStack is = new ItemStack (item,1);
 			if (is != null){
 				try {				
-					if(Bukkit.getServer().getRecipesFor(is).size() == 0 || !Bukkit.getServer().getRecipesFor(is).isEmpty()){
+					if(Bukkit.getServer().getRecipesFor(is).size() != 0 || !Bukkit.getServer().getRecipesFor(is).isEmpty()){
 						if (IngreedientFinder.getRecipeIngreedients(is)[0].getType() != item){
 							ItemStack[] i = IngreedientFinder.getRecipeIngreedients(is);
 								if (i.length > 1) {
 									tPrice = 0.0;
 									for(int x = 0; x < i.length; x++){
 											price = round(Double.valueOf(plugin.getConfig().getString(i[x].getType().name().toUpperCase())),2);
+											price = price * i[x].getAmount();
 											tPrice = tPrice + price;
 									}	
 								}
@@ -85,29 +86,27 @@ public class Shop implements Listener {
 	}
 
 
-	private static void setprice(Material item, int amnt, boolean buy){
+	private static void setprice(Material item, double price, boolean buy){
 		plugin.getConfig().options().copyDefaults(true);
-		ItemStack[] i = IngreedientFinder.getRecipeIngreedients(new ItemStack (item,1));
+		
 		double priceM = 0.0;
 		double priceT = 0.0;
-		if (i.length > 0){
+		try {
+		if (Bukkit.getServer().getRecipesFor(new ItemStack(item,1)).size() != 0 || !Bukkit.getServer().getRecipesFor(new ItemStack(item,1)).isEmpty()){
+			ItemStack[] i = IngreedientFinder.getRecipeIngreedients(new ItemStack (item,1));
 			for(int x = 0; x < i.length; x++){
-				double price = Double.valueOf(plugin.getConfig().getString(i[x].getType().name()));
-				priceM = modifyPrice(buy, price, amnt);
-				if (priceM <= 0.0){
-					priceM = 0.1;
-				}
-				priceM = round(priceM,2);
+				double rPrice = modifyPrice(buy,Double.valueOf(plugin.getConfig().getString(i[x].getType().name())),i[x].getAmount());
+				priceM = round( rPrice / i[x].getAmount(),2);
 				plugin.getConfig().set(i[x].getType().name().toUpperCase(), priceM);
-				priceT += priceM;
+				priceT += rPrice;
 			}
 		} else {
-			double price = Double.valueOf(plugin.getConfig().getString(item.name()));
-			priceM = modifyPrice(buy, price, amnt);
-			if (priceM <= 0.0){
-				priceM = 0.1;
-			}
-			priceT += priceM;
+			price = Double.valueOf(plugin.getConfig().getString(item.name()));
+			priceT += price;
+		}
+		}catch(Exception e){
+			price = Double.valueOf(plugin.getConfig().getString(item.name()));
+			priceT += price;
 		}
 		priceT = round(priceT,2);
 		plugin.getConfig().set(item.name().toUpperCase(),priceT);
@@ -178,10 +177,10 @@ public class Shop implements Listener {
 		if(!(econ.hasAccount(player))){
 			econ.createPlayerAccount(player);
 		}
-		total = op * amnt;
+		total = modifyPrice(true,op ,amnt);
 		EconomyResponse r = econ.withdrawPlayer(player, total);
-		total = modifyPrice(true, op, amnt);
-		setprice(item.getType(), amnt, true);
+		
+		setprice(item.getType(), (total/amnt), true);
 		if(r.transactionSuccess()) {
             player.sendMessage(String.format(ChatColor.GREEN +"You have spent %s and now have %s", econ.format(r.amount), econ.format(r.balance)));
             player.getInventory().addItem(new ItemStack(item.getType(), item.getAmount()));
@@ -230,7 +229,7 @@ public class Shop implements Listener {
 			} 
 		}
 		double total = 0.0;
-		double op = getprice(itemstack.getType());
+		double op = getprice(mat);
 		if (op == -1){
 			p.sendMessage(ChatColor.GRAY + mat.name().toString().toLowerCase().replace("_", " ") + ": is not avalible for trade.");
 			if (GUI) {
@@ -238,9 +237,9 @@ public class Shop implements Listener {
 			}
 			return false;
 		}
-		total = op * amount;
+		total = modifyPrice(false, op, amount);
 		
-		setprice(itemstack.getType(), amount, false);
+		setprice(itemstack.getType(),(total / amount), false);
 		EconomyResponse r = econ.depositPlayer(p, total);
 	if(r.transactionSuccess()) {
             p.sendMessage(String.format(ChatColor.AQUA + "You were given %s for %s x %s and now have %s", econ.format(r.amount),amount,mat.name().toString().toLowerCase().replace("_", " "), econ.format(r.balance)));
@@ -270,18 +269,24 @@ public class Shop implements Listener {
     }
 	private static double modifyPrice(boolean buy, double opBD, int amnt){
 		double total = 0;
-		long op = (long) (round(opBD,2) * 100); //0.01 = 1
-		long transMod = (long) (round(mod,2) * 100); //% modifier x 100 so 0.01 = 1 
-		if (op <= 1){
-			op = 100;
-		}
-		if(buy){
-			total = op + (transMod / op);
-		} else {
-			total = op - (transMod / op);
-		}
+		double op = round(opBD,2); //0.01 = 1
+		double transMod = round(mod,2); //%0.01 = 1 
+			if (op <= 1){
+				op = 1;
+			}
+			//  increase = [mod] * (op)
+			// Decrease = [mod] * (op)
+			double modifiyAmount = (transMod * op );
+			if(buy){
+				total = (op + modifiyAmount);// total = (price + increase)
+			} else {
+				total = (op - modifiyAmount);// total = (price - decrease)
+			}
+			total = total * amnt;
+			total = round((total), 2);
+
 		
-		return round((total / 100), 2);
+		return total;
 		
 	}
 	public static double round(double value, int places ) {

@@ -1,14 +1,13 @@
 # Default Config File for Dynamic Shops Plugin
 # GUI enables or disables the GUI feature of the shops.
-# Default Modifier: 1% change per sale to 2 dp; eg. 0.01 but not 0.001
-# I would recommend basing on average players per day on server; if you get about 10 per day then the value should be 100, if you get about 1 per day then the value should be 10.
-#Prices: "-1" indicates disabled, use "/DSA set name price" to enable
+# Default Modifier: 1% change as a decimal per sale to 3 dp; eg. 0.001 but not 0.0001
+#Prices: "-1" indicates disabled, use "/dsa set name price" to enable or /dsa set [price] on held item
 
 message: Dynamic Shops plugin Developed by idiotonastic.
 
 GUI: true
 
-Modifier: 1
+Modifier: 0.01
 
 ACACIA_BOAT: -1
 ACACIA_BUTTON: -1

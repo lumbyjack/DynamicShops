@@ -12,6 +12,8 @@ commands:
         description: opens GUI based buy screen if GUI enabled
     Sell:
         description: opens GUI based sell screen if GUI enabled
+    Price:
+        description: returns Price of item.
     DSA:
         description: Administration commands.
 
