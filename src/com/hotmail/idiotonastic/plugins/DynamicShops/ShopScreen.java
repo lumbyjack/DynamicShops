@@ -1,7 +1,6 @@
 package com.hotmail.idiotonastic.plugins.DynamicShops;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +26,6 @@ public class ShopScreen implements Listener {
 	private static String backTitle = ChatColor.YELLOW + "Back to Menu";
 	private static String sellTitle = ChatColor.YELLOW + "Sell";
 	private static String sellConfirm = ChatColor.GREEN + "Sell";
-	private static RoundingMode round = RoundingMode.UP;
 	/*
 	 * Building blocks
 	 * Decoration blocks
@@ -120,18 +118,12 @@ public class ShopScreen implements Listener {
 				{
 					if(plugin.getConfig().getInt(items[y].toUpperCase()) != -1)//is not -1 price
 					{   
-						//BigDecimal price = Shop.getprice(Material.getMaterial(items[y].toUpperCase()));
-						BigDecimal price = new BigDecimal(plugin.getConfig().getDouble(items[y].toUpperCase()));
-						if (price.intValue()>0){
-							price.setScale(4, round);
-						} else {
-							price.setScale(4);
-						}
-						
+						//double price = Shop.getprice(Material.getMaterial(items[y].toUpperCase()));
+						double price = plugin.getConfig().getDouble(items[y].toUpperCase());						
 						ItemStack item = new ItemStack(Material.getMaterial(items[y].toUpperCase()), 1);
 						ItemMeta iM = item.getItemMeta();
 						try {
-						iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue())));
+						iM.setLore(Arrays.asList("Price: " + econ.format(price)));
 						item.setItemMeta(iM);
 						} catch (NullPointerException e){
 							e.printStackTrace();
@@ -154,17 +146,21 @@ public class ShopScreen implements Listener {
 			pageM.setDisplayName(prevPage);
 			page.setItemMeta(pageM);
 			page.setAmount(pageNo-1);
-			i.setItem(46, page);
+			i.setItem(48, page);
 		}
 		if((y+1) < items.length){
 			pageM.setDisplayName(nextPage);
 			page.setItemMeta(pageM);
 			page.setAmount(pageNo+1);
-			i.setItem(52, page);
+			i.setItem(50, page);
 		}
 		ItemStack back = new ItemStack(Material.DARK_OAK_DOOR, 1);
 		ItemMeta bM = back.getItemMeta();
 		bM.setDisplayName(backTitle);
+		ArrayList<String> lore = new ArrayList<String>();
+		lore.add(""+screenNo);
+		lore.add(""+pageNo);
+		bM.setLore(lore);
 		back.setItemMeta(bM);
 		i.setItem(53, back);
 		
@@ -172,45 +168,53 @@ public class ShopScreen implements Listener {
 
 	}
 	public void amountScreen(Player player, Material mat) {
-
+		List<String> backMeta = new ArrayList<String>();
+		amountScreen(player,mat,backMeta);
+	}
+	public void amountScreen(Player player, Material mat, List<String> backMeta) {
 		Inventory i = plugin.getServer().createInventory(null, 9, ammountTitle);
 		ItemStack item = new ItemStack(mat, 1);
 		ItemStack back = new ItemStack(Material.DARK_OAK_DOOR, 1);
 		ItemMeta iM = item.getItemMeta();
 		ItemMeta bM = back.getItemMeta();
 		bM.setDisplayName(backTitle);
-		back.setItemMeta(bM);
-		BigDecimal price = Shop.getprice(mat);
-		if (price.intValue()>0){
-			price.setScale(4, round);
-		} else {
-			price.setScale(4);
+		if(!backMeta.isEmpty()){
+			bM.setLore(backMeta);
 		}
+		back.setItemMeta(bM);
+		double price = Shop.getprice(mat);
 		
-		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue())));
+		iM.setLore(Arrays.asList("Price: " + econ.format(price)));
+		item.setItemMeta(iM);
+		i.setItem(0, item);
+		item.setAmount(4);
+		iM.setLore(Arrays.asList("Price: " + econ.format(price*4)));
 		item.setItemMeta(iM);
 		i.setItem(1, item);
-		item.setAmount(4);
-		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue()*4)));
+		item.setAmount(8);
+		iM.setLore(Arrays.asList("Price: " + econ.format(price*8)));
 		item.setItemMeta(iM);
 		i.setItem(2, item);
-		item.setAmount(8);
-		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue()*8)));
+		item.setAmount(16);
+		iM.setLore(Arrays.asList("Price: " + econ.format(price*16)));
 		item.setItemMeta(iM);
 		i.setItem(3, item);
-		item.setAmount(16);
-		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue()*16)));
+		item.setAmount(32);
+		iM.setLore(Arrays.asList("Price: " + econ.format(price*32)));
 		item.setItemMeta(iM);
 		i.setItem(4, item);
-		item.setAmount(32);
-		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue()*32)));
+		item.setAmount(64);
+		iM.setLore(Arrays.asList("Price: " + econ.format(price*64)));
 		item.setItemMeta(iM);
 		i.setItem(5, item);
-		item.setAmount(64);
-		iM.setLore(Arrays.asList("Price: " + econ.format(price.doubleValue()*64)));
+		item.setAmount(28);
+		iM.setLore(Arrays.asList("Price: " + econ.format(price*128)));
 		item.setItemMeta(iM);
 		i.setItem(6, item);
-
+		item.setAmount(56);
+		iM.setLore(Arrays.asList("Price: " + econ.format(price*254)));
+		item.setItemMeta(iM);
+		i.setItem(7, item);
 		i.setItem(8, back);
 		player.openInventory(i);
 

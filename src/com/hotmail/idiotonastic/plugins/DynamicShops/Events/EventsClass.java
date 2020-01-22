@@ -24,10 +24,11 @@ public class EventsClass implements Listener {
 	//private static String sellConfirm = ShopScreen.getSellConfirm();
 	@EventHandler
 	public void InvenEsc(InventoryCloseEvent event){
-		if (event.getView().getTitle().equals(sellTitle)) {
+		if (event.getView().getTitle().equals(sellTitle)) 
+		{
+			Inventory inv = event.getInventory();
 			Player player = (Player) event.getPlayer();
-			ItemStack[] openS = event.getInventory().getContents();
-			Shop.sell(player, openS, true);
+			Shop.sell(player, inv, true);
 			return;
 		}
 	}
@@ -46,14 +47,21 @@ public class EventsClass implements Listener {
 			return;
 		} 
 		
-		if ((event.getView().getTitle().equals(menu)||event.getView().getTitle().equals(sellTitle)||event.getView().getTitle().equals(itemM)||event.getView().getTitle().equals(ammount) )) {
+		if ((event.getView().getTitle().equals(menu)||event.getView().getTitle().equals(sellTitle)||event.getView().getTitle().equals(itemM) )) {
 			if (item.getItemMeta().getDisplayName().equalsIgnoreCase(backTitle)){
 				event.setCancelled(true);
 				ShopScreen is = new ShopScreen();
 				is.menuScreen(player);
 				return;
 			}
-		} 
+		} else if (event.getView().getTitle().equals(ammount)){
+			if (item.getItemMeta().getDisplayName().equalsIgnoreCase(backTitle)){
+				event.setCancelled(true);
+				ShopScreen is = new ShopScreen();
+				is.itemScreen(player,Integer.valueOf(item.getItemMeta().getLore().get(0)),Integer.valueOf(item.getItemMeta().getLore().get(1)));
+				return;
+			}
+		}
 		if (event.getView().getTitle().equals(menu)) {
 			
 			event.setCancelled(true);
@@ -75,12 +83,12 @@ public class EventsClass implements Listener {
 				as.itemScreen(player, ShopScreen.getScreenNo(mat),item.getAmount());
 				return;
 			}
-			as.amountScreen(player, item.getType());
+			
+			as.amountScreen(player, item.getType(),event.getClickedInventory().getItem(53).getItemMeta().getLore());
 			return;
 		} else
 		if (event.getView().getTitle().equals(ammount)) {
 			event.setCancelled(true);
-			player.closeInventory();
 			Shop.buy(player, item);
 			return;
 		}

@@ -1,6 +1,5 @@
 package com.hotmail.idiotonastic.plugins.DynamicShops;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import net.milkbowl.vault.economy.Economy;
@@ -121,8 +120,8 @@ public class Commands implements Listener, CommandExecutor {
 						doReload = true;
 					} else if (args[0].toLowerCase().equals("set")){
 						Shop.set(p,p.getInventory().getItemInMainHand(),args[1]);
-						BigDecimal price = Shop.getprice(p.getInventory().getItemInMainHand().getType());
-						p.sendMessage(String.format("Price for: %s set to %s",p.getInventory().getItemInMainHand().getType(), econ.format(price.doubleValue())));
+						double price = Shop.getprice(p.getInventory().getItemInMainHand().getType());
+						p.sendMessage(String.format("Price for: %s set to %s",p.getInventory().getItemInMainHand().getType(), econ.format(price)));
 						return true;
 					} else {
 						p.sendMessage("Please use " + ChatColor.BLUE + "/DSA [ reload | set ]");
