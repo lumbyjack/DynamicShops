@@ -73,6 +73,10 @@ public class Main extends JavaPlugin implements Listener {
 	public boolean getDebug(){
 		return debug;
 	}
+	public void doReload(){
+		this.getPluginLoader().disablePlugin(this);
+		this.getPluginLoader().enablePlugin(this);
+	}
 	public enum State 
 	{
 			BUY,

@@ -122,7 +122,6 @@ public class Commands implements Listener, CommandExecutor {
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("DSA")) {
-			Boolean doReload = false;
 
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
@@ -132,7 +131,7 @@ public class Commands implements Listener, CommandExecutor {
 							return false;
 					}
 					if(args[0].toLowerCase().equals("reload")){
-						doReload = true;
+						plugin.doReload();
 					} else if (args[0].toLowerCase().equals("set")){
 						Shop.set(p,p.getInventory().getItemInMainHand(),args[1]);
 						double price = Shop.getprice(p.getInventory().getItemInMainHand().getType());
@@ -149,7 +148,7 @@ public class Commands implements Listener, CommandExecutor {
 			} else {
 				// command is from console so allow
 				if(args[0].toLowerCase() == "reload"){
-					doReload = true;
+					plugin.doReload();
 				} else if (args[0].toLowerCase() == "set"){
 					try {
 						Material.getMaterial(args[1].toUpperCase());
@@ -168,11 +167,7 @@ public class Commands implements Listener, CommandExecutor {
 				}
 			}
 
-			if (doReload) {
-				plugin.reloadConfig();
-				sender.sendMessage("Config reloaded.");
-				return true;
-			}
+
 		}
 		return false;
 

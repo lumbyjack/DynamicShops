@@ -38,10 +38,13 @@ public class IngreedientFinder {
 			        		}
 			        	} else if (shaped.getIngredientMap().get(key[q]).getType().name().contains("_PLANKS") && plankCheck){
 		        			inv.addItem(new ItemStack(Material.DEBUG_STICK,shaped.getIngredientMap().get(key[q]).getAmount()));
-		    			} else {
+		    			} else if (item.getType().name().equalsIgnoreCase("SUGAR_CANE")){ 
+			        		if (!(shaped.getIngredientMap().get(key[q]).getType().name().equalsIgnoreCase("PAPER"))){
+			        			inv.addItem(shaped.getIngredientMap().get(key[q]));
+			        		}
+			        	}
 				        	inv.addItem(shaped.getIngredientMap().get(key[q]));
 		    			}
-		        	}
 		        }
 		        break;
 		    }

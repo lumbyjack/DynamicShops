@@ -45,7 +45,7 @@ public class Shop implements Listener {
 					if(Bukkit.getServer().getRecipesFor(is).size() != 0 || !Bukkit.getServer().getRecipesFor(is).isEmpty()){
 						if (IngreedientFinder.getRecipeIngreedients(is)[0].getType() != item){
 							ItemStack[] i = IngreedientFinder.getRecipeIngreedients(is);
-								if (i.length >= 2) {
+								if (i.length < 2) {
 									tPrice = 0.0;
 									for(int x = 0; x < i.length; x++){
 										if (i[x].getType().equals((Material.DEBUG_STICK))){
@@ -146,15 +146,15 @@ public class Shop implements Listener {
 					}
 				}
 			} else {
-				price = modifyPrice(s, Double.valueOf(plugin.getConfig().getString(item.name())), amount);
 				priceT += price;
 			}
 		}catch(Exception e){
-			price = modifyPrice(s, Double.valueOf(plugin.getConfig().getString(item.name())), amount);
+			price = Double.valueOf(plugin.getConfig().getString(item.name()));
 			priceT += price;
 		}
 		priceT = round(priceT,2);
-		plugin.getConfig().set(item.name().toUpperCase(),priceT);
+		double PriceF = priceT/amount;
+		plugin.getConfig().set(item.name().toUpperCase(),PriceF);
 		plugin.saveConfig();
 		plugin.getConfig();
 		return;
