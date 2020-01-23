@@ -21,7 +21,6 @@ public class Main extends JavaPlugin implements Listener {
 	private static String 	MCVersion = "1.15.1";
 	private static boolean debug = false;
 	private boolean GUI = true;
-	
 	public void onEnable() {
         if (!setupEconomy()) {
             this.getLogger().severe("Disabled due to no Vault dependency found!");
@@ -74,4 +73,10 @@ public class Main extends JavaPlugin implements Listener {
 	public boolean getDebug(){
 		return debug;
 	}
+	public enum State 
+	{
+			BUY,
+			SELL,
+			SET
+	};
 }

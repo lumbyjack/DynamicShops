@@ -2,11 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path=".git/BuildPath/spigot-api-1.15.1-R0.1-SNAPSHOT-shaded.jar" sourcepath=".git/BuildPath/Build">
+	<classpathentry kind="lib" path=".git/BuildPath/Vault.jar"/>
+	<classpathentry kind="lib" path="S:/Server/Code Jar/Build/Spigot/Spigot-API/target/spigot-api-1.15.2-R0.1-SNAPSHOT-shaded.jar" sourcepath="S:/Server/Code Jar/Build/Spigot">
 		<attributes>
 			<attribute name="javadoc_location" value="https://hub.spigotmc.org/javadocs/spigot/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path=".git/BuildPath/Vault.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

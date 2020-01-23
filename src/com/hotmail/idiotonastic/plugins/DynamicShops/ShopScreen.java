@@ -54,7 +54,7 @@ public class ShopScreen implements Listener {
 		Decoration_blocks.setItemMeta(meta);
 		ItemStack Redstone = new ItemStack(Material.REDSTONE_TORCH, 1);
 		meta = Redstone.getItemMeta();
-		meta.setDisplayName(ChatColor.LIGHT_PURPLE + "RedStone");
+		meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Redstone");
 		Redstone.setItemMeta(meta);
 		ItemStack Transportation = new ItemStack(Material.POWERED_RAIL, 1);
 		meta = Transportation.getItemMeta();
@@ -116,7 +116,7 @@ public class ShopScreen implements Listener {
 				
 				if(plugin.getConfig().contains(items[y].toUpperCase()))//is in config
 				{
-					if(plugin.getConfig().getString(items[y].toUpperCase()) != "-1")//is not -1 price
+					if(plugin.getConfig().getInt(items[y].toUpperCase())!= -1)//is not -1 price
 					{   
 						//double price = Shop.getprice(Material.getMaterial(items[y].toUpperCase()));
 						double price = plugin.getConfig().getDouble(items[y].toUpperCase());						

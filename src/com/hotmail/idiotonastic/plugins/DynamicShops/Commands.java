@@ -35,23 +35,21 @@ public class Commands implements Listener, CommandExecutor {
 			sender.sendMessage("Sorry only players can use Dynamic Shops");
 			return false;
 		}
-		if (args[0].toLowerCase().equals("price")){
-			Player p = (Player) sender;
-			if (args.length == 1) { 
-				Shop.price(p, p.getInventory().getItemInMainHand().getType());
-				return true;
-			} else {
-				try {
-					Material.getMaterial(args[1].toUpperCase());
-				} catch(NullPointerException e) {
-					p.sendMessage("Item not found.");
-					return false;
-				}
-				Shop.priceC(p,args);
-				return true;
+		if (cmd.getName().equalsIgnoreCase("price")){
+			if (sender instanceof Player) {
+				Player p = (Player) sender;
+				if ((p.isOp()) || (p.hasPermission("dynamicshops.cantrade"))) {
+					Shop.price(p, p.getInventory().getItemInMainHand().getType());
+					return true;
+				} 
+				sender.sendMessage("Sorry you lack permission to use Dynamic Shops");
+				return false;
 			}
-			
+			sender.sendMessage("Sorry only players can use Dynamic Shops");
+			return false;
 		}
+			
+		
 		if (cmd.getName().equalsIgnoreCase("DS") || cmd.getName().equalsIgnoreCase("Shop")) {
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
