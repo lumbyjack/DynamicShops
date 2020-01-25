@@ -1,26 +1,24 @@
-main: com.hotmail.idiotonastic.plugins.DynamicShops.Main
-name: DynamicShops-GUI
-version: 2.0
+main: com.hotmail.idiotonastic.plugins.TrulyDynamicShops.Main
+name: TrulyDynamicShops
+version: 3.0
 api-version: 1.15
 author: idiotonastic
 depend: [ Vault ]
 
 commands:
-    DS:
-        description: normal commands. e.g "DS sell apple 10" OR "DS price apple"
     Shop:
         description: opens GUI based buy screen if GUI enabled
     Sell:
         description: opens GUI based sell screen if GUI enabled
     Price:
         description: returns Price of item.
-    DSA:
+    TDS:
         description: Administration commands.
 
 permissions:
-    dynamicshops.admin:
+    trulydynamicshops.admin:
         description: Players with this node have all dynamicshops permissions.
         default: op
-    dynamicshops.cantrade:
+    trulydynamicshops.cantrade:
         description: Players with this node can buy and sell items
         default: true
